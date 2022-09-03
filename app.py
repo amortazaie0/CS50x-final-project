@@ -2,9 +2,14 @@ from flask import request, render_template, redirect, Flask
 from flask_mail import Mail, Message
 import os
 import re
+from flask_session import Session
 
 app = Flask("__name__")
 
+# Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 @app.route("/", methods=["POST", "GET"])
 def index():
