@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block title %}register{% endblock %}
+
+{% block main %}
+
+    {% if not eror %}
+    <form class="row g-3" method="post" action="/register">
+      <div class="col-md-4">
+        <label for="name" class="form-label">name</label>
+        <input type="text" class="form-control" id="name" required name="name">
+      </div>
+
+        <div class="col-md-4">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" required name="email">
+      </div>
+
+      <div class="col-md-4">
+        <label for="username" class="form-label">Username</label>
+        <div class="input-group">
+          <span class="input-group-text" id="inputGroupPrepend3">@</span>
+          <input type="text" class="form-control" id="username" aria-describedby="inputGroupPrepend3" required name="user_name">
+        </div>
+      </div>
+
+        <div class="col-md-4">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" required name="password">
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-primary" type="submit">Register</button>
+      </div>
+
+
+    </form>
+    {% else %}
+    <form class="row g-3" method="post" action="/register">
+      <div class="col-md-4">
+        <label for="name" class="form-label">name</label>
+        <input type="text" class="form-control is-valid" id="name" required name="name" value="{{ name }}">
+      </div>
+
+        <div class="col-md-4">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control {{ email_validity }}" id="email" required name="email" value="{{ email }}">
+            {% if email_validity == "is-invalid" %}
+                <div id="validationServer03Feedback" class="{{ email_feedback }}">
+                    There is an account with this email address try <button class="btn btn-primary" type="button"><a href="/login" style="color: white; text-decoration: none">Login</a></button></div>
+            {% else %}
+                    <div id="validationServer03Feedback" class="{{ email_feedback }}">
+                        email is fine
+                    </div>
+                    {% endif %}
+                </div>
+
+
+
+      <div class="col-md-4">
+        <label for="username" class="form-label">username</label>
+        <input type="email" class="form-control {{ user_validity }}" id="username" required name="user_name" value="{{ username }}">
+            {% if user_validity == "is-invalid" %}
+                <div id="validationServer03Feedback" class="{{ user_feedback }}">
+                    user name exists, try another one</div>
+            {% else %}
+                    <div id="validationServer03Feedback" class="{{ user_feedback }}">
+                        username is fine
+                    </div>
+                    {% endif %}
+                </div>
+
+        <div class="col-md-4">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control {{ user_validity }}" id="password" required name="password">
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-primary" type="submit">Register</button>
+      </div>
+
+
+    </form>
+    {% endif %}
+
+{% endblock %}
