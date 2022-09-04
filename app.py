@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, Flask
+from flask import request, render_template, redirect, Flask, session
 from flask_mail import Mail, Message
 import os
 import re
