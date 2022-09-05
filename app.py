@@ -14,6 +14,14 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# email configuring
+app.config["MAIL_DEFAULT_SENDER"] = "a.mortazaie.uk@outlook.com"
+app.config["MAIL_PASSWORD"] = "amirali.1388"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_SERVER"] = "smtp.office365.com"
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = "a.mortazaie.uk@outlook.com"
+mail = Mail(app)
 
 @app.route("/", methods=["GET"])
 def index():
@@ -65,6 +73,10 @@ def register():
                                    email_validity=email_validity, email_feedback=email_feedback, name=name,
                                    username=username, email=email, password=None)
         else:
+            message = Message(f"You are registered!", recipients=[email],
+                              body=f"Hi {name}    You are registered in todo, \n"
+                                   f"welcome")
+            mail.send(message)
             db.execute("INSERT INTO users (user_name, hashpass, email, name) VALUES (?, ?, ?, ?)", username, hashpass, email, name)
             id = db.execute("SELECT user_id FROM users WHERE user_name=?", username)[0]
             user_id = id["user_id"]
@@ -72,3 +84,6 @@ def register():
             return redirect("/")
 
         # db.execute("INSERT INTO users (user_name, hashpass, email, name)VALUES (?, ?, ?, ?)", username, hashpass, email, name)
+
+
+
