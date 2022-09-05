@@ -86,4 +86,7 @@ def register():
         # db.execute("INSERT INTO users (user_name, hashpass, email, name)VALUES (?, ?, ?, ?)", username, hashpass, email, name)
 
 
-
+@app.route("/logout")
+def logout():
+        session["user_id"] = None
+        return redirect("/")
