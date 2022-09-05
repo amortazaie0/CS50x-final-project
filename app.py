@@ -23,6 +23,7 @@ app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = "a.mortazaie.uk@outlook.com"
 mail = Mail(app)
 
+
 @app.route("/", methods=["GET"])
 def index():
     try:
@@ -30,6 +31,7 @@ def index():
     except:
         return redirect("/login")
     return render_template("index.html")
+
 
 @app.route("/login")
 def login():
@@ -77,7 +79,8 @@ def register():
                               body=f"Hi {name}    You are registered in todo, \n"
                                    f"welcome")
             mail.send(message)
-            db.execute("INSERT INTO users (user_name, hashpass, email, name) VALUES (?, ?, ?, ?)", username, hashpass, email, name)
+            db.execute("INSERT INTO users (user_name, hashpass, email, name) VALUES (?, ?, ?, ?)", username, hashpass,
+                       email, name)
             id = db.execute("SELECT user_id FROM users WHERE user_name=?", username)[0]
             user_id = id["user_id"]
             session["user_id"] = user_id
@@ -88,5 +91,5 @@ def register():
 
 @app.route("/logout")
 def logout():
-        session["user_id"] = None
-        return redirect("/")
+    session["user_id"] = None
+    return redirect("/")
