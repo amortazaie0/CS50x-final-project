@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}Change Password{% endblock %}
+
+{% block main %}
+
+    <form class="row g-3" method="post" action="/changepass">
+
+        <div class="col-md-4 centre" id="passld">
+        <label for="password" class="form-label">New password</label>
+        <input type="password" class="form-control" id="password" required name="password">
+        </div>
+
+        <div class="col-12 centre" id="btnld" style="margin: auto">
+            <button class="btn btn-primary" type="submit">Change</button>
+        </div>
+    </form>
+
+{% endblock %}

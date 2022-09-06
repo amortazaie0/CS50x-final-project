@@ -5,6 +5,7 @@ import re
 from cs50 import SQL
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from functools import wraps
 
 app = Flask("__name__")
 db = SQL("sqlite:///database.db")
@@ -23,19 +24,42 @@ app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = "a.mortazaie.uk@outlook.com"
 mail = Mail(app)
 
+def login_required(f):
+    """
+    Decorate routes to require login.
+
+    https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route("/", methods=["GET"])
+@login_required
 def index():
-    try:
-        session["user_id"]
-    except:
-        return redirect("/login")
     return render_template("index.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["POST", "GET"])
 def login():
-    return render_template("login.html")
+    session.clear()
+    if request.method == "POST":
+        user_name = request.form.get("user_name")
+        password = request.form.get("password")
+        users = db.execute("SELECT * FROM users WHERE user_name = ?", user_name)
+
+        if len(users) != 1 or not check_password_hash(users[0]["hashpass"], password):
+            return render_template("login.html", eror=True, user_validity="is-invalid",
+                                   user_feedback="invalid-feedback")
+        else:
+            user_id = users[0]["user_id"]
+            session["user_id"] = user_id
+            return redirect("/")
+    else:
+        return render_template("login.html", eror=False)
 
 
 @app.route("/register", methods=["POST", "GET"])
@@ -93,3 +117,20 @@ def register():
 def logout():
     session["user_id"] = None
     return redirect("/")
+
+
+@app.route("/changepass", methods=["POST", "GET"])
+@login_required
+def changepass():
+    if request.method == "POST":
+        password = request.form.get("password")
+        hashpass = generate_password_hash(password)
+        db.execute("UPDATE users SET hashpass=? WHERE user_id = ?", hashpass, session["user_id"])
+        email = db.execute("SELECT email FROM users WHERE user_id = ?", session["user_id"])[0]["email"]
+        name = db.execute("SELECT name FROM users WHERE user_id = ?", session["user_id"])[0]["name"]
+        message = Message(f"TODO password change", recipients=[email],
+                          body=f"Hi {name}\n    Your password successfully changed")
+        mail.send(message)
+        return redirect("/")
+    else:
+        return render_template("changepass.html")

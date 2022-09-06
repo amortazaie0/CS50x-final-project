@@ -1,9 +1,54 @@
 {% extends "layout.html" %}
 
-{% block title %}login{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block main %}
 
-    <h1>login</h1>
+    {% if not eror %}
+    <form class="row g-3" method="post" action="/login">
+
+      <div class="col-md-4 centre" id="useld">
+        <label for="usernamel" class="form-label">Username</label>
+        <div class="input-group">
+          <span class="input-group-text" id="inputGroupPrepend3">@</span>
+          <input type="text" class="form-control" id="usernamel" aria-describedby="inputGroupPrepend3" required name="user_name">
+        </div>
+      </div>
+
+        <div class="col-md-4 centre" id="passld">
+        <label for="passwordl" class="form-label">Password</label>
+        <input type="password" class="form-control" id="passwordl" required name="password">
+        </div>
+
+      <div class="col-12 centre" id="btnld" style="margin: auto">
+        <button class="btn btn-primary" type="submit">Login</button>
+      </div>
+
+
+    </form>
+    {% else %}
+    <form class="row g-3" method="post" action="/login">
+      <div class="col-md-4 centre">
+        <label for="username" class="form-label">username</label>
+        <input type="text" class="form-control {{ user_validity }}" id="username" required name="user_name" value="{{ username }}">
+            {% if user_validity == "is-invalid" %}
+                <div id="validationServer03Feedback" class="{{ user_feedback }}">
+                    User name or password is wrong try again.
+                </div>
+            {% endif %}
+      </div>
+
+        <div class="col-md-4 centre">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control {{ user_validity }}" id="password" required name="password">
+        </div>
+
+      <div class="col-12 centre" style="margin: auto">
+        <button class="btn btn-primary" type="submit">Login</button>
+      </div>
+
+
+    </form>
+    {% endif %}
 
 {% endblock %}
