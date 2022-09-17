@@ -59,7 +59,7 @@
 
       <div class="col-md-4">
         <label for="username" class="form-label">username</label>
-        <input type="email" class="form-control {{ user_validity }}" id="username" required name="user_name" value="{{ username }}">
+        <input type="text" class="form-control {{ user_validity }}" id="username" required name="user_name" value="{{ username }}">
             {% if user_validity == "is-invalid" %}
                 <div id="validationServer03Feedback" class="{{ user_feedback }}">
                     user name exists, try another one</div>

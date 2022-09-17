@@ -4,6 +4,126 @@
 
 {% block main %}
 
-    <h1>hello</h1>
+
+    <header>
+     <form style="height: 80%" action="/" method="post">
+        <div class="input-group">
+            <span class="input-group-b"><button type="submit" class="btn btn-secondry">submit</button></span>
+          <input type="text" aria-label="First name" class="form-control" placeholder="name of the task" id="name" name="name">
+            <input type="datetime-local" id="date-time-local" name="date" hidden autocomplete="off">
+            <select required class="form-select form-select-sm" aria-label=".form-select-sm example" id="types" hidden name="type">
+              <option selected disabled value="">Open this select menu</option>
+                {% for item in types %}
+                    <option> {{ item["type"]}} </option>
+                {% endfor %}
+            </select>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" hidden id="typebutton" data-bs-target="#newtype">new type</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" hidden id="dltypebutton" data-bs-target="#dltype">Delete type</button>
+        </div>
+
+    </form>
+    <!-- Modal -->
+<div class="modal fade" id="newtype" tabindex="-1" aria-labelledby="add a new type" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">delete a type</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form action="/ntype" method="post">
+              <input name="nametype" placeholder="name of the new type" autofocus autocomplete="off" class="input-sm">
+              <button type="submit" class="btn btn-primary">add new type</button>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="dltype" tabindex="-1" aria-labelledby="add a new type" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">create a new type</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form action="/dltype" method="post">
+             <select class="form-select" aria-label="Default select example" id="typesl" required name="nametype">
+              <option selected disabled>Open this select menu</option>
+                {% for item in types %}
+                    <option> {{ item["type"]}} </option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn btn-danger">Delete a type</button>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+    </header>
+
+    <script>
+        document.querySelector('#name').addEventListener('input', function (){
+            const date = document.querySelector('#date-time-local');
+            date.removeAttribute('hidden')
+            date.setAttribute('style="animation-name: \'grow\'; animation-duration: 3s; animation-fill-mode: forwards;"')
+        })
+        document.querySelector('#name').addEventListener('input', function (){
+            const date = document.querySelector('#types');
+            date.removeAttribute('hidden')
+            date.setAttribute('style="animation-name: \'grow\'; animation-duration: 3s; animation-fill-mode: forwards;"')
+        })
+        document.querySelector('#name').addEventListener('input', function (){
+            const date = document.querySelector('#typebutton');
+            date.removeAttribute('hidden')
+            date.setAttribute('style="animation-name: \'grow\'; animation-duration: 3s; animation-fill-mode: forwards;"')
+        })
+        document.querySelector('#name').addEventListener('input', function (){
+            const date = document.querySelector('#dltypebutton');
+            date.removeAttribute('hidden')
+            date.setAttribute('style="animation-name: \'grow\'; animation-duration: 3s; animation-fill-mode: forwards;"')
+        })
+    </script>
+    <main>
+    {{ id }}
+<script>
+    function redirect(){
+        window.location.href = '/check'; //relative to domain
+    }
+
+</script>
+    <div class="tasks">
+        {% for item in tasks %}
+        <div class="task">
+            {% if item["status"] == "TODO" %}
+            <form action="/check" id="{{ item["task_id"] }}" method="post">
+                <input hidden value="{{ item["task_id"] }}" name="id">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onchange="document.getElementById('{{ item["task_id"] }}').submit()">
+            </form>
+            {% else %}
+            <form action="/check" id="{{ item["task_id"] }}" method="post">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked onchange="document.getElementById('{{ item["task_id"] }}').submit()">
+                <input hidden value="{{ item["task_id"] }}" name="id">
+            </form>
+            {% endif %}
+            <span id="namet">{{ item["task_name"]}}</span>
+            <span id="date">{{ item["year"]}}/{{ item["month"] }}/{{ item["day"] }}         {{ item["hour"] }}:{{ item["minute"] }}</span>
+            <span id="type">{{ item["type"] }}</span>
+            <form action="/delete" method="post">
+                <button type="submit" class="btn btn-outline-secondary"><img src="/static/images.png" width="32" height="28" alt="delete"></button>
+
+                <input value="{{ item["task_id"] }}" type="text" hidden name="id">
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    </main>
+
 
 {% endblock %}
